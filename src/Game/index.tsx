@@ -3,13 +3,14 @@ import Board from "../components/Board";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { useDispatch, useSelector } from "react-redux";
-import { gameState, playTurn, newGame } from "./slice";
+import { selectGameState, selectBoard, playTurn, newGame } from "./slice";
 import './styles.scss';
 
 const Game: React.FC = () => {
     const dispatch = useDispatch();
 
-    const { board, player, gameover, winner } = useSelector(gameState);
+    const board = useSelector(selectBoard);
+    const { player, gameover, winner } = useSelector(selectGameState);    
 
     const boardOnMove = (row: number, col: number) => {
         dispatch(playTurn(row, col));

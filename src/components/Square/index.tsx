@@ -1,5 +1,5 @@
 import React from 'react';
-import { GameState } from "../../Game/slice"
+import { GameState } from "../../Game/slice";
 import './styles.scss';
 
 interface SquareProps {

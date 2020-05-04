@@ -4,13 +4,13 @@ import { isWinner, isDraw } from "./utils";
 
 const STORAGE_KEY = "tic-tac-toe";
 
-const emptyBoard = [
+export const emptyBoard = [
     [0, 0, 0],
     [0, 0, 0],
     [0, 0, 0]
 ];
 
-enum Winner {
+export enum Winner {
     No = -1,
     Draw = 0,
     Player1 = 1,
@@ -24,7 +24,7 @@ export interface GameState {
     winner: Winner
 }
 
-const initialState: GameState = {
+export const initialState: GameState = {
     board: emptyBoard,
     gameover: false,
     player: 1,
@@ -40,15 +40,15 @@ export const slice = createSlice({
             state.gameover = true
         },
         movePlayer: (state, action) => {
-            const updated = state.board.slice();
-            const { player, row, col } = action.payload;
-            updated[row][col] = player;
+            const updated = [...state.board];
+            const { row, col } = action.payload;
+        
+            updated[row][col] = state.player;
 
-            state.board = updated;
-            state.player = player;
+            state.board = updated;            
         },
-        switchPlayer: (state, action) => {
-            state.player = action.payload;
+        switchPlayer: (state) => {
+            state.player = state.player === 1 ? 2 : 1;
         },
         winner: (state, action) => {
             state.winner = action.payload
@@ -58,7 +58,7 @@ export const slice = createSlice({
 
 export const { newGame, gameOver, movePlayer, switchPlayer, winner } = slice.actions;
 
-const checkWinner = () => (dispatch: StoreDispatch, getState: () => RootState) => {    
+export const checkWinner = () => (dispatch: StoreDispatch, getState: () => RootState) => {    
     const { board, player } = getState().game;
 
     if (isWinner(board, player)) {
@@ -67,22 +67,21 @@ const checkWinner = () => (dispatch: StoreDispatch, getState: () => RootState) =
     } else if (isDraw(board)) {
         dispatch(winner(Winner.Draw));
         dispatch(gameOver());
+    } else {
+        dispatch(switchPlayer());
     }
 };
 
 export const playTurn = (row: number, col: number) => (dispatch: StoreDispatch, getState: () => RootState) => {
-    const { board, player, gameover } = getState().game;
+    const { board, gameover } = getState().game;
 
     //play only if the game is still in progress and the square is empty
     if (gameover || board[row][col] !== 0) {
         return;
     }
 
-    const nextPlayer = player === 1 ? 2 : 1;
-
-    dispatch(movePlayer({ player, row, col }));
+    dispatch(movePlayer({ row, col }));
     dispatch(checkWinner());
-    dispatch(switchPlayer(nextPlayer));    
 };
 
 export function loadState(): GameState {
@@ -94,6 +93,7 @@ export function saveState(gameState: GameState): void {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(gameState));
 }
 
-export const gameState = (state: RootState) => state.game;
+export const selectGameState = (state: RootState) => state.game;
+export const selectBoard = (state: RootState) => state.game.board;
 
 export default slice.reducer;

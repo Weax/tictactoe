@@ -1,0 +1,27 @@
+.cell {
+    flex: 1 1;
+    padding: 15px;
+    font-size: 5rem;
+    background-color: inherit;
+    outline: none;
+    border: 1px solid #fff;
+    border-top: 0;
+    border-bottom: 0;
+    color: white;
+    cursor: pointer;
+
+    &:hover {
+        background-color: rgba($color: white, $alpha: 0.1);
+    }
+
+    &::before {
+        content: "\200B";
+    }
+
+    &:first-child {
+        border-left: 0;
+    }
+    &:last-child {
+        border-right: 0;
+    }
+}

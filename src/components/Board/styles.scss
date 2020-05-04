@@ -1,0 +1,19 @@
+.board {
+    position: relative;
+    margin: 3rem 0;
+    .board-row {
+        display: flex;
+        justify-content: center;
+
+        border: 1px solid #fff;
+        border-right: 0;
+        border-left: 0;
+
+        &:first-child {
+            border-top: 0;
+        }
+        &:last-child {
+            border-bottom: 0;
+        }
+    }
+}
